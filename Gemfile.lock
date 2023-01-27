@@ -53,10 +53,11 @@ PLATFORMS
   x86_64-darwin-21
 
 DEPENDENCIES
-  minitest (~> 5.0)
+  bundler
+  minitest
   phrase!
-  rake (~> 13.0)
-  rubocop (~> 1.21)
+  rake
+  rubocop
 
 BUNDLED WITH
    2.4.5

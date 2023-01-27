@@ -1,20 +1,26 @@
-# Phrase
+# Ruby Coding Challenge - i18n backend
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/phrase`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Build
+As an experienced Rails developer you‘re most certainly familiar with the i18n gem [1], the most popular choice to internationalise Ruby applications. The i18n gem supports multiple backends to store and retrieve translations.
+
+Your challenge: Remote file support for the i18n gem
+  - Create a Ruby gem that builds on top of the i18n library
+  - This new library should support fetching translation files via HTTP rather than just relying on local translation files
+  - It should be possible to fall back to local translation files in case of any network issues
+
+[1] https://github.com/ruby-i18n/i18n
 
 ## Installation
 
-Install the gem and add to the application's Gemfile by executing:
-
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+  - Clone this repository to your local machine
+  - Switch to your project, where you would like to add this Gem
+  - add `gem 'phrase', path: '<your_local_path>/phrase/'` to your Gemfile
+  - run `bundle`
 
 ## Usage
 
-TODO: Write usage instructions here
+  - If the provided base path for the remote translation files is available, the translations will be loaded from there
+  - Otherwise there is a fallback to use the locally present files
 
 ## Development
 

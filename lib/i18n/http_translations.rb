@@ -1,42 +1,30 @@
 # frozen_string_literal: true
 
-require 'i18n/backend/base'
+require 'i18n'
 require 'psych'
 require 'httpx/adapters/faraday'
 
 module I18n
   module Backend
-    class HttpTranslations
-      attr_reader :locale, :endpoint, :connection
+    class HttpTranslations < ::I18n::Backend::Simple
+      attr_reader :endpoint, :connection
 
       def initialize
-        @locale = I18n.locale
-        # @endpoint = "#{ENV['BASE_TRANSLATIONS_URL']}/translations"
         @endpoint = 'https://raw.githubusercontent.com/svenfuchs/rails-i18n/master/rails/locale/'
         @connection = Faraday.new(url: @endpoint,
                                   ssl: { verify: false },
                                   request: { timeout: 600, open_timeout: 600 }) do |faraday|
                                     faraday.adapter :httpx, resolver_options: { cache: false }
                                   end
-        reload!
+        super
       end
 
       module Implementation
         include Base
-        include Flatten
-
-        def reload!
-          @translations = nil
-
-          self
-        end
-
-        def initialized?
-          !@translations.nil?
-        end
 
         def init_translations
           @translations = load_http_translations
+          @initialized = true
         end
 
         def translations(do_init: false)
@@ -44,15 +32,10 @@ module I18n
           @translations ||= {}
         end
 
-        def available_locales
-          I18n::Backend::Simple.new.available_locales
-        end
-
         protected
 
         def load_http_translations
-          response = connection.send(:get, "#{endpoint}#{locale}.yml")
-
+          response = connection.send(:get, "#{endpoint}#{I18n.locale}.yml")
           Psych.safe_load(response.body, permitted_classes: [Symbol], symbolize_names: true) if response.success?
         rescue Faraday::Error
           nil
