@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
-require 'phrase'
-
+require 'bundler/setup'
 require 'minitest/autorun'
+require 'mocha/minitest'
+
+require 'i18n'
+require 'i18n/tests'
 
 module I18n
   class TestCase < Minitest::Test

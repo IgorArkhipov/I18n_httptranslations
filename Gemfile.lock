@@ -23,6 +23,8 @@ GEM
       concurrent-ruby (~> 1.0)
     json (2.6.3)
     minitest (5.17.0)
+    mocha (2.0.2)
+      ruby2_keywords (>= 0.0.5)
     parallel (1.22.1)
     parser (3.2.0.0)
       ast (~> 2.4.1)
@@ -44,6 +46,10 @@ GEM
       unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.24.1)
       parser (>= 3.1.1.0)
+    rubocop-minitest (0.27.0)
+      rubocop (>= 0.90, < 2.0)
+    rubocop-rake (0.6.0)
+      rubocop (~> 1.0)
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
     stringio (3.0.4)
@@ -55,9 +61,12 @@ PLATFORMS
 DEPENDENCIES
   bundler
   minitest
+  mocha
   phrase!
   rake
   rubocop
+  rubocop-minitest
+  rubocop-rake
 
 BUNDLED WITH
    2.4.5

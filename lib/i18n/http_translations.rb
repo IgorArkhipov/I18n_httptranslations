@@ -6,7 +6,7 @@ require 'httpx/adapters/faraday'
 
 module I18n
   module Backend
-    class HttpTranslations < ::I18n::Backend::Simple
+    class HttpTranslations < I18n::Backend::Simple
       attr_reader :endpoint, :connection
 
       def initialize
@@ -32,13 +32,23 @@ module I18n
           @translations ||= {}
         end
 
+        def translate(locale, key, options = {})
+          result = catch(:exception) { super }
+
+          if result.is_a?(I18n::MissingTranslation)
+            throw(:exception, result)
+          else
+            result
+          end
+        end
+
         protected
 
         def load_http_translations
           response = connection.send(:get, "#{endpoint}#{I18n.locale}.yml")
           Psych.safe_load(response.body, permitted_classes: [Symbol], symbolize_names: true) if response.success?
         rescue Faraday::Error
-          nil
+          raise I18n::MissingTranslation
         end
       end
 
