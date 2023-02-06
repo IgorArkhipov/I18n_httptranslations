@@ -7,11 +7,18 @@ require 'httpx/adapters/faraday'
 module I18n
   module Backend
     class HttpTranslations < I18n::Backend::Simple
-      attr_reader :endpoint, :connection
+      ENDPOINT_MISSING = 'Remote endpoint URL is not configured. Please set the `endpoint` property on the' \
+                         'I18n::Backend::HttpTranslations class before using the gem and `translate` method.'
+      class << self
+        attr_accessor :endpoint
+      end
+
+      attr_reader :connection
 
       def initialize
-        @endpoint = 'https://raw.githubusercontent.com/svenfuchs/rails-i18n/master/rails/locale/'
-        @connection = Faraday.new(url: @endpoint,
+        raise(StandardError, ENDPOINT_MISSING) unless self.class.endpoint
+
+        @connection = Faraday.new(url: self.class.endpoint,
                                   ssl: { verify: false },
                                   request: { timeout: 600, open_timeout: 600 }) do |faraday|
                                     faraday.adapter :httpx, resolver_options: { cache: false }
@@ -45,7 +52,7 @@ module I18n
         protected
 
         def load_http_translations
-          response = connection.send(:get, "#{endpoint}#{I18n.locale}.yml")
+          response = connection.send(:get, "#{self.class.endpoint}#{I18n.locale}.yml")
           Psych.safe_load(response.body, permitted_classes: [Symbol], symbolize_names: true) if response.success?
         rescue Faraday::Error
           raise I18n::MissingTranslation

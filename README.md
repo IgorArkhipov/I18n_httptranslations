@@ -13,9 +13,16 @@ Your challenge: Remote file support for the i18n gem
 ## Installation
 
   - Clone this repository to your local machine
+  - Switch to Gem's project folder, install required dependencies with `bundle` and build a gem with `rake build`
   - Switch to your project, where you would like to add this Gem
-  - add `gem 'phrase', path: '<your_local_path>/phrase/'` to your Gemfile
-  - run `bundle`
+  - Add `gem 'phrase', path: '<your_local_path>/phrase/'` to your Gemfile and run `bundle`
+  - Now you can configure your I18n translation backend to use this HttpTranslations extension by adding the following code to your configuration file (in case of Rails: `application.rb`):
+    - set remote repository endpoint, where locales are stored and should be accessed: `I18n::Backend::HttpTranslations.endpoint = 'https://raw.githubusercontent.com/leapcode/leap_web/master/config/locales/'`
+    - configure fallback to local locales: `I18n.backend = I18n::Backend::Chain.new(I18n::Backend::HttpTranslations.new, I18n::Backend::Simple.new)`
+    - While using fallback don't forget to load the local locale files as well:
+      `I18n.load_path = Dir[File.join(<locales_dir>, '*.yml')]`
+  - By using `I18n.translate(...)` the remote locale will be parsed and the corresponding translation will be used.
+  - The remote endpoint is supposed to provide a corresponding YAML file for each configured locale (f.e. en.yml for `:en`)
 
 ## Usage
 
